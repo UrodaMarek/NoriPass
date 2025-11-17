@@ -1,4 +1,7 @@
 # Compiled programme
 bin/
+noripass
+*.o
 # Settings of IDE
 .vscode
+tool*
