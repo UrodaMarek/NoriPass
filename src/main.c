@@ -4,33 +4,33 @@
 #include <stdio.h>
 
 int main() {
-    int choice;
-    int default_tab = 0;
+    int choice, default_tab = 0, is_logged_in, flag = 1;
     Ui ui;
     ui_init(&ui);
-/*
-    while (1) {
-        if (size_of(tabs) == 0) {
-            add_table();
-            tabs = (Tab*)realloc(tabs,sizeof(Tab))
-        }
-        show_menu();
-        
-
+    new_tab(&ui);
+    while (flag) {
+        is_logged_in = ui.tabs[default_tab].is_logged_in;
+        wrefresh(ui.menu_bar[is_logged_in]);
+        choice = wgetch(ui.menu_bar[is_logged_in]);
         switch(choice) {
-            case 'N':
-                new_tab();
+            case KEY_F(1):
+                new_tab(&ui);
                 break;
-            case 2:
-                add_password();
+            case KEY_F(2):
+                //new_tab();
                 break;
-            case 3:
-                ui_end();
-                exit(0);
+            case KEY_F(3):
+                //new_tab();
+                break;
+            case KEY_F(4):
+                //add_password();
+                break;
+            case KEY_F(5):
+                flag = 0;
+                break;
         }
     }
-    */
     getchar();
-    ui_close();
+    ui_end();
     return 0;
 }

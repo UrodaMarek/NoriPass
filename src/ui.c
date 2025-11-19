@@ -4,46 +4,53 @@
 //#include "storage.h"
 
 void ui_init(Ui *ui) {
-    int height, width, starty, startx;
     initscr();
     cbreak();
     noecho();
-    keypad(stdscr, TRUE);
-    
-    height = 3;
-    width = 5;
-    starty = 0;
-    startx = 0;
 
-    ui->tabs = (Tab*)malloc(sizeof *ui->tabs);
-    ui->tabs[0].id = 0;
-    ui->tabs[0].is_logged_in = 0;
-    ui->tabs[0].window = newwin(height, width, starty, startx);
-    ui->tabs[0].data = NULL;
-    ui->tabs[0].size = 1;
+    ui->tabs = (Tab*)malloc(0);
+    ui->tab_count = 0;
+    ui->menu_bar[1] = newwin(3, COLS, LINES - 3, 0);
+    ui->menu_bar[0] = newwin(3, COLS, LINES - 3, 0);
 
-    box(ui->tabs[0].window, 0, 0);
-    mvwprintw(ui->tabs[0].window, 1, 2, "1");
-    wrefresh(ui->tabs[0].window);
+    box(ui->menu_bar[1], 0, 0);
+    box(ui->menu_bar[0], 0, 0);
 
+    mvwprintw(ui->menu_bar[1], 1, COLS / 2 - 41, "F1. New Tab | F2. Create database | F3. Delete database | F4. Open database | F5. Close");
+    mvwprintw(ui->menu_bar[0], 1, COLS / 2 - 41, "F1. New Tab | F2. Create database | F3. Delete database | F4. Open database | F5. Close");
 
-    starty += height;
-    width = COLS;
-    height = LINES - height - 3; 
-    ui->main = newwin(height, width, starty, startx);
-    box(ui->main, 0, 0);
-    wrefresh(ui->main);
-
-
-    starty += height;
-    width = COLS;
-    height = 3; 
-    ui->menu_bar = newwin(height, width, starty, startx);
-    box(ui->menu_bar, 0, 0);
-    mvwprintw(ui->menu_bar, 1, COLS / 2 - 41, "Q. New Tab | W. Create database | E. Delete database | R. Open database | T. Close");
-    wrefresh(ui->menu_bar);
+    keypad(ui->menu_bar[1], TRUE);
+    keypad(ui->menu_bar[0], TRUE);
+    wrefresh(ui->menu_bar[0]);
 }
 
-void ui_close() {
+void new_tab(Ui *ui) {
+    int starty, startx, count, id;
+
+    ui->tab_count++;
+    count = ui->tab_count;
+    id = count - 1;
+    starty = 0;
+    startx = 5 * id;
+    ui->tabs = (Tab*)realloc(ui->tabs, (count) * sizeof(Tab));
+    ui->tabs[id].id = id;
+    ui->tabs[id].is_logged_in = 0;
+    ui->tabs[id].tab_icon = newwin(3, 5, starty, startx);
+    ui->tabs[id].data = NULL;
+
+    box(ui->tabs[id].tab_icon, 0, 0);
+    mvwprintw(ui->tabs[id].tab_icon, 1, 2, "%d", count);
+    wrefresh(ui->tabs[id].tab_icon);
+
+
+    starty = 3;
+    startx = 0;
+
+    ui->tabs[id].main = newwin(LINES - 6, COLS, starty, startx);
+    box( ui->tabs[id].main, 0, 0);
+    wrefresh(ui->tabs[id].main);
+}
+
+void ui_end() {
     endwin();
 }

@@ -11,20 +11,21 @@ typedef struct {
 typedef struct {
     int id;
     int is_logged_in;
-    WINDOW *window;
+    WINDOW *tab_icon;
+    WINDOW *main;
     Row *data;
-    int size;
+    int row_count;
 } Tab;
 
 typedef struct {
     Tab *tabs;
-    WINDOW *main;
-    WINDOW *menu_bar;
+    WINDOW *menu_bar[2];
+    int tab_count;
 } Ui;
 
 void ui_init(Ui *ui);
-//void add_password();
-//void ui_end()
+void new_tab(Ui *ui);
+void ui_end();
 
 //void show_menu();
 //void list_passwords();
