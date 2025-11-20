@@ -4,20 +4,26 @@
 #include <stdio.h>
 
 int main() {
-    int choice, default_tab = 0, is_logged_in, flag = 1;
+    int choice, current_tab = 0, is_logged_in, flag = 1;
     Ui ui;
     ui_init(&ui);
-    new_tab(&ui);
+    new_tab(&ui, &current_tab);
     while (flag) {
-        is_logged_in = ui.tabs[default_tab].is_logged_in;
+        is_logged_in = ui.tabs[current_tab].is_logged_in;
         wrefresh(ui.menu_bar[is_logged_in]);
         choice = wgetch(ui.menu_bar[is_logged_in]);
         switch(choice) {
             case KEY_F(1):
-                new_tab(&ui);
+                if ((ui.tab_count + 1) < 9) {
+                    new_tab(&ui, &current_tab);
+                }
                 break;
             case KEY_F(2):
-                //new_tab();
+                if (ui.tab_count == 1) {
+                    flag = 0;
+                    break;
+                }
+                close_tab(&ui, &current_tab);
                 break;
             case KEY_F(3):
                 //new_tab();
@@ -30,7 +36,6 @@ int main() {
                 break;
         }
     }
-    getchar();
-    ui_end();
+    ui_end(&ui);
     return 0;
 }

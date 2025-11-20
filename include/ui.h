@@ -9,7 +9,6 @@ typedef struct {
 } Row;
 
 typedef struct {
-    int id;
     int is_logged_in;
     WINDOW *tab_icon;
     WINDOW *main;
@@ -24,8 +23,9 @@ typedef struct {
 } Ui;
 
 void ui_init(Ui *ui);
-void new_tab(Ui *ui);
-void ui_end();
+void new_tab(Ui *ui, int *current_tab);
+void close_tab(Ui *ui, int *current_tab);
+void ui_end(Ui *ui);
 
 //void show_menu();
 //void list_passwords();
