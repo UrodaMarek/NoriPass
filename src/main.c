@@ -34,6 +34,12 @@ int main() {
             case KEY_F(5):
                 flag = 0;
                 break;
+            case KEY_LEFT:
+                change_tab(&ui, &current_tab, 'l');
+                break;
+            case KEY_RIGHT:
+                change_tab(&ui, &current_tab, 'r');
+                break;
         }
     }
     ui_end(&ui);

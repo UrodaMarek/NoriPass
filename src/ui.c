@@ -31,6 +31,7 @@ void set_current_tab(Tab *tab, int *current_tab) {
     mvwprintw(tab->tab_icon, 1, 1, " %d ", (*current_tab)+1);
     wattroff(tab->tab_icon, A_REVERSE); 
     wrefresh(tab->tab_icon);
+    wrefresh(tab->main);
 }
 
 void unset_current_tab(Tab *tab, int *current_tab) {
@@ -38,6 +39,20 @@ void unset_current_tab(Tab *tab, int *current_tab) {
     box(tab->tab_icon, 0, 0);
     mvwprintw(tab->tab_icon, 1, 2, "%d", (*current_tab)+1);
     wrefresh(tab->tab_icon);
+}
+
+void change_tab(Ui *ui, int *current_tab, char flag) {
+    unset_current_tab(&ui->tabs[*current_tab], &(*current_tab));
+    switch (flag) {
+        case 'l':
+            if ((*current_tab) > 0) (*current_tab)--;
+            break;
+        case 'r':
+            if ((*current_tab + 1) < ui->tab_count) (*current_tab)++;
+            break;
+    }
+    set_current_tab(&ui->tabs[*current_tab], &(*current_tab));
+
 }
 
 void new_tab(Ui *ui, int *current_tab) {
@@ -91,12 +106,15 @@ void free_tab(Tab *tab) {
 
 
 void close_tab(Ui *ui, int *current_tab) {
-    int target = *current_tab, i = 0, startx = 0;
-    unset_current_tab(&ui->tabs[target], &(target));
+    int i = 0, startx = 0;
+    unset_current_tab(&ui->tabs[*current_tab], &(*current_tab));
 
-    free_tab(&ui->tabs[target]);
+    free_tab(&ui->tabs[*current_tab]);
 
-    for (i = target; i < ui->tab_count - 1; i++) {
+    for (i = *current_tab; i < (ui->tab_count - 1); i++) {
+        werase(ui->tabs[i+1].tab_icon);
+        wrefresh(ui->tabs[i+1].tab_icon);
+
         ui->tabs[i] = ui->tabs[i + 1];
     }
 
@@ -106,12 +124,10 @@ void close_tab(Ui *ui, int *current_tab) {
     if (*current_tab == ui->tab_count) *current_tab = ui->tab_count - 1;
 
     for (i = 0; i < ui->tab_count; i++) {
-
         mvwin(ui->tabs[i].tab_icon, 0, startx);
-        werase(ui->tabs[i].tab_icon);
         box(ui->tabs[i].tab_icon, 0, 0);
         mvwprintw(ui->tabs[i].tab_icon, 1, 2, "%d", i+1);
-
+        
         touchwin(ui->tabs[i].main);
         wrefresh(ui->tabs[i].main);
         wrefresh(ui->tabs[i].tab_icon);

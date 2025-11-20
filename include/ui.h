@@ -24,6 +24,7 @@ typedef struct {
 
 void ui_init(Ui *ui);
 void new_tab(Ui *ui, int *current_tab);
+void change_tab(Ui *ui, int *current_tab, char flag);
 void close_tab(Ui *ui, int *current_tab);
 void ui_end(Ui *ui);
 
